@@ -1,0 +1,162 @@
+#include <iostream>
+ 
+using::std::endl;
+using::std::cout;
+using::std::cin;
+ 
+void ask(int, int, char &, int &);
+void show(int **, int, int);
+void r_up(int **, int, int);
+void r_dn(int **, int, int);
+void c_lt(int **, int, int);
+void c_rt(int **, int, int);
+ 
+void main(){
+ 
+    int R = 3, C = 3;
+    int **ar = new int*[R];
+    ar[0] = new int[C]{1, 1, 3};
+    ar[1] = new int[C]{1, 2, 2};
+    ar[2] = new int[C]{3, 2, 3};
+ 
+    show(ar, R, C);
+ 
+    void(*pf)(int**, int, int) = show;
+    char action;
+    int pos;
+ 
+    ask(R, C, action, pos);
+ 
+    switch (action)
+    {
+    case'r':
+        pf = c_rt;
+        break;
+    case'l':
+        pf = c_lt;
+        break;
+    case'u':
+        pf = r_up;
+        break;
+    case'd':
+        pf = r_dn;
+        break;
+    }
+ 
+    for (int i = 0; i < pos; i++)
+    {
+        pf(ar, R, C);
+    }
+ 
+    show(ar, R, C);
+ 
+    for (int i = 0; i < R; i++) delete[] ar[i];
+    delete[] ar;
+}
+ 
+void show(int **a, int r, int c){
+ 
+    for (int i = 0; i < r; i++){
+        cout << endl;
+ 
+        for (int j = 0; j < c; j++)
+            cout << a[i][j] << "\t";
+    }
+ 
+    cout << "\n\n";
+}
+ 
+void r_up(int **ar, int R, int C){
+ 
+    int *tmp = new int[C];
+ 
+    for (int j = 0; j < C; j++)
+        tmp[j] = ar[0][j];
+ 
+    for (int i = 0; i < R - 1; i++)
+    for (int j = 0; j < C; j++)
+        ar[i][j] = ar[i + 1][j];
+ 
+    for (int j = 0; j < C; j++)
+        ar[R - 1][j] = tmp[j];
+ 
+    delete[] tmp;
+}
+ 
+ 
+void r_dn(int **ar, int R, int C){
+ 
+    int *tmp = new int[C];
+ 
+    for (int j = 0; j < C; j++)
+        tmp[j] = ar[R - 1][j];
+ 
+    for (int i = R - 1; i > 0; i--)
+    for (int j = 0; j < C; j++)
+        ar[i][j] = ar[i - 1][j];
+ 
+    for (int j = 0; j < C; j++)
+        ar[0][j] = tmp[j];
+ 
+    delete[] tmp;
+}
+ 
+void c_lt(int **ar, int R, int C){
+ 
+    int *tmp = new int[R];
+ 
+    for (int i = 0; i < R; i++)
+        tmp[i] = ar[i][0];
+ 
+    for (int i = 0; i < R; i++)
+    for (int j = 0; j < C - 1; j++)
+        ar[i][j] = ar[i][j + 1];
+ 
+    for (int i = 0; i < R; i++)
+        ar[i][C - 1] = tmp[i];
+ 
+    delete[] tmp;
+}
+ 
+void c_rt(int **ar, int R, int C){
+ 
+    int *tmp = new int[R];
+ 
+    for (int i = 0; i < R; i++)
+        tmp[i] = ar[i][C - 1];
+ 
+    for (int i = 0; i < R; i++)
+    for (int j = C - 1; j > 0; j--)
+        ar[i][j] = ar[i][j - 1];
+ 
+    for (int i = 0; i < R; i++)
+        ar[i][0] = tmp[i];
+ 
+    delete[] tmp;
+}
+ 
+void ask(int C, int R, char &answer, int &p){
+ 
+    do{
+        cout << " right shift [ r ]  left [ l ]  up [ u ]  down [ d ]  : ";
+        cin >> answer;
+    } while (answer != 'r' && answer != 'l' && answer != 'u' && answer != 'd');
+ 
+ 
+    if (answer == 'u' || answer == 'd'){
+ 
+        do{
+            cout << "\n will shift by [ 1 to R ] pos  : ";
+            cin >> p;
+        } while (p < 1 || p > R);
+ 
+    }
+    else{
+ 
+        do{
+            cout << "\n will shift by [ 1 to C ] pos  : ";
+            cin >> p;
+        } while (p < 1 || p > C);
+ 
+    }
+}
